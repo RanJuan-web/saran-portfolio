@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saran — Creative Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090f;
+    --surface: #0d0f1a;
+    --surface2: #141726;
+    --border: rgba(100,140,255,0.08);
+    --border2: rgba(100,140,255,0.16);
+    --text: #e8eaf6;
+    --text2: #7a84b0;
+    --text3: #454d78;
+    --accent: #4f7cff;
+    --accent2: #a0b4ff;
+    --accent-dim: rgba(79,124,255,0.12);
+    --accent-glow: rgba(79,124,255,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(79,124,255,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.35s cubic-bezier(.25,.46,.45,.94), height 0.35s cubic-bezier(.25,.46,.45,.94), border-color 0.2s;
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring { width: 52px; height: 52px; border-color: var(--accent); }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9000; opacity: 0.35;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.5rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(to bottom, rgba(8,9,15,0.97) 0%, transparent 100%);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; letter-spacing: 0.15em;
+    color: var(--text); text-decoration: none; font-style: italic;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text2); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 0 4rem 5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(79,124,255,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(79,124,255,0.04) 0%, transparent 60%);
+  }
+  .hero-lines {
+    position: absolute; top: 0; right: 0;
+    width: 50%; height: 100%; overflow: hidden; opacity: 0.05;
+  }
+  .hero-lines svg { width: 100%; height: 100%; }
+
+  .hero-eyebrow {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.3s forwards;
+  }
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(72px, 12vw, 160px);
+    font-weight: 300; line-height: 0.9; letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 0.5rem;
+    opacity: 0; animation: fadeUp 0.9s 0.5s forwards;
+  }
+  .hero-name .sa { color: var(--text2); }
+  .hero-name .ran {
+    color: var(--accent);
+    font-style: italic;
+    text-shadow: 0 0 80px rgba(79,124,255,0.35);
+  }
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-weight: 300; color: var(--text2); font-style: italic;
+    margin-bottom: 3rem;
+    opacity: 0; animation: fadeUp 0.9s 0.7s forwards;
+  }
+  .hero-meta {
+    display: flex; gap: 3rem;
+    opacity: 0; animation: fadeUp 0.9s 0.9s forwards;
+  }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .hero-meta-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text3); }
+  .hero-meta-value { font-size: 13px; color: var(--text2); }
+
+  .hero-scroll {
+    position: absolute; right: 4rem; bottom: 5rem;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    opacity: 0; animation: fadeIn 1s 1.2s forwards;
+  }
+  .hero-scroll span {
+    font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--text3); writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s infinite;
+  }
+
+  @keyframes scrollPulse { 0%,100%{opacity:0.3;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* SECTIONS */
+  section { padding: 6rem 4rem; position: relative; }
+
+  .section-header {
+    display: flex; align-items: baseline; gap: 1.5rem; margin-bottom: 3rem;
+  }
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px; color: var(--accent); font-style: italic; letter-spacing: 0.05em;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 300; font-style: italic; color: var(--text); flex: 1;
+  }
+  .section-line { height: 1px; flex: 1; background: var(--border); max-width: 200px; }
+  .divider { height: 1px; background: var(--border); margin: 0 4rem; }
+
+  /* SHOWREEL */
+  .showreel-feature {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 2px;
+    overflow: hidden; margin-bottom: 1.5rem;
+  }
+  .showreel-main {
+    background: var(--surface); padding: 3rem;
+    display: flex; flex-direction: column; justify-content: space-between; min-height: 260px;
+  }
+  .showreel-badge {
+    display: inline-block; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid rgba(79,124,255,0.3);
+    padding: 5px 12px; border-radius: 20px; margin-bottom: 1.5rem;
+  }
+  .showreel-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 300; font-style: italic;
+    color: var(--text); line-height: 1; margin-bottom: 1rem;
+  }
+  .showreel-desc { font-size: 12px; color: var(--text3); letter-spacing: 0.05em; }
+  .showreel-cta {
+    display: flex; align-items: center; gap: 12px; text-decoration: none;
+    color: var(--accent); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    transition: gap 0.2s;
+  }
+  .showreel-cta:hover { gap: 18px; }
+  .showreel-cta-arrow {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(79,124,255,0.3); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .showreel-cta:hover .showreel-cta-arrow { background: var(--accent-dim); border-color: var(--accent); }
+
+  .showreel-stats {
+    background: var(--surface2); padding: 3rem;
+    display: grid; grid-template-rows: 1fr 1fr; gap: 1px;
+  }
+  .stat-block { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 300; color: var(--accent2); line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--text3); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* VIDEO CARD GRID */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  .video-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .video-card:hover { border-color: rgba(79,124,255,0.35); transform: translateY(-2px); }
+
+  .video-thumb {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--surface2);
+    position: relative; overflow: hidden;
+  }
+  .video-thumb img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease, opacity 0.3s;
+  }
+  .video-card:hover .video-thumb img { transform: scale(1.04); }
+  .video-thumb-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface2);
+    color: var(--text3); font-size: 13px; letter-spacing: 0.1em;
+  }
+  .play-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(8,9,15,0.35);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .video-card:hover .play-overlay { opacity: 1; }
+  .play-circle {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: rgba(79,124,255,0.85);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: white;
+    backdrop-filter: blur(4px);
+  }
+
+  .video-meta {
+    padding: 1rem 1.1rem 1.2rem;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .video-cat {
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+  }
+  .video-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.3;
+  }
+  .video-src {
+    font-size: 10px; color: var(--text3); letter-spacing: 0.1em; margin-top: 2px;
+  }
+
+  /* plain work grid (non-video) */
+  .work-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .work-item {
+    background: var(--surface); padding: 1.75rem;
+    text-decoration: none; color: inherit;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: background 0.2s; position: relative; overflow: hidden;
+  }
+  .work-item::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s cubic-bezier(.25,.46,.45,.94);
+  }
+  .work-item:hover { background: var(--surface2); }
+  .work-item:hover::before { transform: scaleX(1); }
+  .work-cat { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); }
+  .work-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.3;
+  }
+  .work-arrow { font-size: 18px; color: var(--text3); margin-top: auto; transition: color 0.2s, transform 0.2s; }
+  .work-item:hover .work-arrow { color: var(--accent); transform: translate(4px, -4px); }
+
+  /* COLLAB */
+  .collab-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+  .collab-row { background: var(--surface); display: grid; grid-template-columns: 220px 1fr; gap: 0; transition: background 0.2s; }
+  .collab-row:hover { background: var(--surface2); }
+  .collab-info { padding: 2rem 2rem 2rem 2.5rem; border-right: 1px solid var(--border); }
+  .collab-company { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; font-style: italic; color: var(--text); margin-bottom: 4px; }
+  .collab-sub { font-size: 11px; color: var(--text3); letter-spacing: 0.1em; }
+  .collab-links { padding: 2rem; display: flex; flex-wrap: wrap; gap: 8px; align-content: center; }
+  .pill {
+    font-size: 11px; letter-spacing: 0.08em; color: var(--text2);
+    border: 1px solid var(--border2); padding: 6px 14px; border-radius: 20px;
+    text-decoration: none; transition: color 0.2s, border-color 0.2s, background 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pill:hover { color: var(--accent); border-color: rgba(79,124,255,0.4); background: var(--accent-glow); }
+
+  /* DESIGN */
+  .design-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+  .design-feature { background: var(--surface); padding: 3rem; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; }
+  .design-stack { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .design-item { background: var(--surface); padding: 2rem; text-decoration: none; color: inherit; transition: background 0.2s; display: flex; flex-direction: column; gap: 8px; }
+  .design-item:hover { background: var(--surface2); }
+
+  /* FOOTER */
+  footer { padding: 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-end; }
+  .footer-name { font-family: 'Cormorant Garamond', serif; font-size: 56px; font-weight: 300; font-style: italic; color: var(--text3); line-height: 1; }
+  .footer-meta { text-align: right; display: flex; flex-direction: column; gap: 6px; }
+  .footer-year { font-size: 12px; color: var(--text3); letter-spacing: 0.15em; }
+  .footer-role { font-size: 11px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(.25,.46,.45,.94), transform 0.7s cubic-bezier(.25,.46,.45,.94); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 0 1.5rem 4rem; }
+    section { padding: 4rem 1.5rem; }
+    .divider { margin: 0 1.5rem; }
+    .showreel-feature, .design-grid { grid-template-columns: 1fr; }
+    .collab-row { grid-template-columns: 1fr; }
+    .collab-info { border-right: none; border-bottom: 1px solid var(--border); }
+    footer { padding: 2.5rem 1.5rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
+    .footer-meta { text-align: left; }
+    .hero-scroll, .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Sa<span>ran</span></a>
+  <ul class="nav-links">
+    <li><a href="#motion">Motion</a></li>
+    <li><a href="#threed">3D</a></li>
+    <li><a href="#collab">Clients</a></li>
+    <li><a href="#design">Design</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines">
+    <svg viewBox="0 0 600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="100" y1="0" x2="600" y2="900" stroke="white" stroke-width="0.5"/>
+      <line x1="200" y1="0" x2="700" y2="900" stroke="white" stroke-width="0.5"/>
+      <line x1="300" y1="0" x2="800" y2="900" stroke="white" stroke-width="0.5"/>
+      <line x1="400" y1="0" x2="900" y2="900" stroke="white" stroke-width="0.5"/>
+      <line x1="0" y1="200" x2="600" y2="0" stroke="white" stroke-width="0.5"/>
+      <circle cx="300" cy="400" r="200" stroke="white" stroke-width="0.5" fill="none"/>
+      <circle cx="300" cy="400" r="350" stroke="white" stroke-width="0.5" fill="none"/>
+    </svg>
+  </div>
+
+  <p class="hero-eyebrow">Motion Graphic &nbsp;·&nbsp; 3D &nbsp;·&nbsp; Creative Director</p>
+  <h1 class="hero-name"><span class="sa">Sa</span><span class="ran">ran</span></h1>
+  <p class="hero-subtitle">Crafting motion, depth & visual stories</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Discipline</span>
+      <span class="hero-meta-value">Motion Graphic, 3D, Video Editing, Artwork</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Clients</span>
+      <span class="hero-meta-value">Ookbee · SSUP · One Channel · ANGA Bangkok · ETC</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Year</span>
+      <span class="hero-meta-value">2026</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</div>
+
+<!-- 01 MOTION -->
+<section id="motion">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Motion Graphic Works</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="showreel-feature reveal">
+    <div class="showreel-main">
+      <div>
+        <span class="showreel-badge">★ Featured Work</span>
+        <div class="showreel-title">Showreel<br>2024</div>
+        <p class="showreel-desc">Best of year &nbsp;·&nbsp; Motion Graphic Compilation</p>
+      </div>
+      <a href="https://drive.google.com/file/d/1zxJChlJcnf2IgQKwPKt5bBPzWCiiBIIa/view" target="_blank" class="showreel-cta">
+        <div class="showreel-cta-arrow">▶</div>
+        Watch Showreel
+      </a>
+    </div>
+    <div class="showreel-stats">
+      <div class="stat-block">
+        <div class="stat-num">6+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-block" style="border-top:1px solid var(--border);">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Motion Projects</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="video-grid reveal">
+    <a href="https://www.youtube.com/watch?v=GmnIo1m1eZw" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/GmnIo1m1eZw/hqdefault.jpg" alt="Motion Graphic Project 01" loading="lazy">
+        <div class="play-overlay"><div class="play-circle">▶</div></div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Motion Graphic</span>
+        <span class="video-title">Project 01</span>
+        <span class="video-src">YouTube</span>
+      </div>
+    </a>
+    <a href="https://www.youtube.com/watch?v=AywmMU-YqMM" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/AywmMU-YqMM/hqdefault.jpg" alt="Motion Graphic Project 02" loading="lazy">
+        <div class="play-overlay"><div class="play-circle">▶</div></div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Motion Graphic</span>
+        <span class="video-title">Project 02</span>
+        <span class="video-src">YouTube</span>
+      </div>
+    </a>
+    <a href="https://www.youtube.com/watch?v=TXvl9d770qM" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/TXvl9d770qM/hqdefault.jpg" alt="Motion Graphic Project 03" loading="lazy">
+        <div class="play-overlay"><div class="play-circle">▶</div></div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Motion Graphic</span>
+        <span class="video-title">Project 03</span>
+        <span class="video-src">YouTube</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 02 3D -->
+<section id="threed">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">3D & Additional Works</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="video-grid reveal">
+    <a href="https://youtu.be/TM1bwIPTHCc" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/TM1bwIPTHCc/hqdefault.jpg" alt="3D Showcase" loading="lazy">
+        <div class="play-overlay"><div class="play-circle">▶</div></div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">3D Animation</span>
+        <span class="video-title">3D Showcase Reel</span>
+        <span class="video-src">YouTube</span>
+      </div>
+    </a>
+    <a href="https://www.youtube.com/watch?v=KBQDyiT3P50" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/KBQDyiT3P50/hqdefault.jpg" alt="Additional Work" loading="lazy">
+        <div class="play-overlay"><div class="play-circle">▶</div></div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Additional Work</span>
+        <span class="video-title">Additional Video Work</span>
+        <span class="video-src">YouTube</span>
+      </div>
+    </a>
+    <a href="https://drive.google.com/open?id=1-KE9a5UDxkbDPpKNQ7UOIgIkeljye8Hw" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <div class="video-thumb-placeholder">3D Portfolio</div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Portfolio</span>
+        <span class="video-title">3D Portfolio Collection</span>
+        <span class="video-src">Google Drive</span>
+      </div>
+    </a>
+    <a href="https://drive.google.com/open?id=1s0qG4PV6fxGrrWSu1gc6ZZeG5I2TwBby" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <div class="video-thumb-placeholder">Logo Animation</div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Animation</span>
+        <span class="video-title">Logo Animation</span>
+        <span class="video-src">Google Drive</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 03 CLIENTS -->
+<section id="collab">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Client Work</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="collab-grid reveal">
+    <div class="collab-row">
+      <div class="collab-info">
+        <div class="collab-company">Ookbee</div>
+        <div class="collab-sub">Fictionlog Platform</div>
+      </div>
+      <div class="collab-links">
+        <a href="https://www.facebook.com/fictionlog/videos/4530125793740560" target="_blank" class="pill">Promo Video 1</a>
+        <a href="https://www.facebook.com/fictionlog/videos/3925824617455443" target="_blank" class="pill">Promo Video 2</a>
+        <a href="https://www.facebook.com/fictionlog/videos/1340026906434297" target="_blank" class="pill">Promo Video 3</a>
+        <a href="https://fb.watch/e-7l4abAky/" target="_blank" class="pill">Facebook</a>
+        <a href="https://youtu.be/qElMBBZSYy4" target="_blank" class="pill">YouTube 1</a>
+        <a href="https://youtu.be/aWCavCqJxwQ" target="_blank" class="pill">YouTube 2</a>
+        <a href="https://youtu.be/MjVwjRFKU4A" target="_blank" class="pill">YouTube 3</a>
+      </div>
+    </div>
+    <div class="collab-row">
+      <div class="collab-info">
+        <div class="collab-company">Phapdee<br>Thaweesuk</div>
+        <div class="collab-sub">Film & Advertising</div>
+      </div>
+      <div class="collab-links">
+        <a href="https://www.facebook.com/namulifesnailwhite/videos/2196690557227705/" target="_blank" class="pill">Snailwhite Ad</a>
+        <a href="https://www.facebook.com/BauschLombTH/videos/2025945137630372" target="_blank" class="pill">BauschLomb Ad</a>
+        <a href="https://www.facebook.com/watch/?v=240042250041676" target="_blank" class="pill">The Pool Trailer</a>
+        <a href="https://www.youtube.com/watch?v=e6XaUC8zoBY&t=4s" target="_blank" class="pill">The Gifted Series</a>
+        <a href="https://today.line.me/th/v2/article/kE9jakw" target="_blank" class="pill">Social World Series</a>
+      </div>
+    </div>
+    <div class="collab-row">
+      <div class="collab-info">
+        <div class="collab-company">SSUP Group</div>
+        <div class="collab-sub">Cute Press · Oriental Princess</div>
+      </div>
+      <div class="collab-links">
+        <a href="https://www.facebook.com/cutepress/videos/10154497448446074/" target="_blank" class="pill">Campaign 1</a>
+        <a href="https://drive.google.com/open?id=1hd5Dw15qW32Mgs4ylVapvCdt2Pb47h2H" target="_blank" class="pill">Campaign 2</a>
+        <a href="https://drive.google.com/open?id=1LIdTdbpGqcFIz_K8QjrPwoIpu1AxPk0S" target="_blank" class="pill">Campaign 3</a>
+        <a href="https://www.instagram.com/p/BObbED3gNnU/?taken-by=cute_press" target="_blank" class="pill">Instagram 1</a>
+        <a href="https://www.instagram.com/p/BM5giuSgsaM/?taken-by=orientalprincesssociety" target="_blank" class="pill">Instagram 2</a>
+        <a href="https://www.youtube.com/watch?v=xRlRyKNhJZQ" target="_blank" class="pill">YouTube</a>
+      </div>
+    </div>
+    <div class="collab-row">
+      <div class="collab-info">
+        <div class="collab-company">ETC</div>
+        <div class="collab-sub">Additional Projects</div>
+      </div>
+      <div class="collab-links">
+        <a href="https://www.youtube.com/live/Y8uSAKWTeaM" target="_blank" class="pill">Joyboy VTR ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">TV Production</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="video-grid reveal">
+    <a href="https://www.youtube.com/live/RD0lw3Es4Y0?feature=share" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/RD0lw3Es4Y0/hqdefault.jpg" alt="TV Show Live" loading="lazy">
+        <div class="play-overlay"><div class="play-circle">▶</div></div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Live Production</span>
+        <span class="video-title">TV Show Live — One Channel</span>
+        <span class="video-src">YouTube</span>
+      </div>
+    </a>
+    <a href="https://youtu.be/tJq0pWMvR8I" target="_blank" class="video-card">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/tJq0pWMvR8I/hqdefault.jpg" alt="TV Highlight" loading="lazy">
+        <div class="play-overlay"><div class="play-circle">▶</div></div>
+      </div>
+      <div class="video-meta">
+        <span class="video-cat">Post-production</span>
+        <span class="video-title">TV Highlight — One Channel</span>
+        <span class="video-src">YouTube</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 05 VIDEO EDITING -->
+<section>
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Video Editing</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="collab-grid reveal">
+    <div class="collab-row">
+      <div class="collab-info">
+        <div class="collab-company">ANGA Bangkok</div>
+        <div class="collab-sub">Lifestyle & Mastery</div>
+      </div>
+      <div class="collab-links">
+        <a href="https://www.instagram.com/anga_bangkok_life/" target="_blank" class="pill">Instagram</a>
+        <a href="https://www.tiktok.com/@angamastery" target="_blank" class="pill">TikTok Mastery</a>
+        <a href="https://www.tiktok.com/@anga_bangkok" target="_blank" class="pill">TikTok Bangkok</a>
+        <a href="https://www.youtube.com/@ANGAMASTERY" target="_blank" class="pill">YouTube Channel</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 06 DESIGN -->
+<section id="design">
+  <div class="section-header reveal">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Design & Other Works</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="design-grid reveal">
+    <div class="design-feature">
+      <div>
+        <span class="work-cat" style="display:block; margin-bottom:1rem;">Illustration</span>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-style:italic; font-weight:300; color:var(--text); line-height:1.2; margin-bottom:1rem;">ranjuan.lab</div>
+        <p style="font-size:12px; color:var(--text3); line-height:1.8;">Personal illustration project exploring<br>character design and visual storytelling.</p>
+      </div>
+      <a href="https://www.instagram.com/ranjuan.lab/" target="_blank" class="showreel-cta" style="margin-top:2rem;">
+        <div class="showreel-cta-arrow" style="font-size:14px;">↗</div>
+        View on Instagram
+      </a>
+    </div>
+    <div class="design-stack">
+      <div class="design-item" style="cursor:default; background:var(--surface2);">
+        <span class="work-cat">UX/UI</span>
+        <span class="work-name" style="font-size:18px;">UX/UI Portfolio</span>
+        <span style="font-size:11px; color:var(--text3);">Product design & interface work</span>
+      </div>
+      <div class="design-item" style="cursor:default; background:var(--surface2);">
+        <span class="work-cat">Graphic</span>
+        <span class="work-name" style="font-size:18px;">AW / Banner Design</span>
+        <span style="font-size:11px; color:var(--text3);">Advertising & print materials</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">Saran.</div>
+  <div class="footer-meta">
+    <span class="footer-role">Motion · 3D · Creative</span>
+    <span class="footer-year">© 2026</span>
+  </div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+  });
+  function animateRing(){
+    rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  },{threshold:0.1});
+  revealEls.forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
